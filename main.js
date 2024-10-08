@@ -159,9 +159,88 @@ const quoterV2Abi = [
     type: "function",
   },
 ];
+
+const universalQuoterABI = [
+  {
+    inputs: [
+      { internalType: "bytes", name: "forkBitmap", type: "bytes" },
+      {
+        internalType: "address[]",
+        name: "quoterOrPoolddresses",
+        type: "address[]",
+      },
+      { internalType: "address[]", name: "tokenIns", type: "address[]" },
+      { internalType: "address[]", name: "tokenOuts", type: "address[]" },
+      { internalType: "uint24[]", name: "fees", type: "uint24[]" },
+      { internalType: "uint256", name: "amountIn", type: "uint256" },
+    ],
+    name: "quoteUniversal",
+    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "poolAddress", type: "address" },
+      { internalType: "address", name: "tokenIn", type: "address" },
+      { internalType: "address", name: "tokenOut", type: "address" },
+      { internalType: "uint24", name: "fee", type: "uint24" },
+      { internalType: "uint256", name: "amountIn", type: "uint256" },
+    ],
+    name: "quoteV2",
+    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address[]", name: "poolAddresses", type: "address[]" },
+      { internalType: "address[]", name: "tokenIns", type: "address[]" },
+      { internalType: "address[]", name: "tokenOuts", type: "address[]" },
+      { internalType: "uint24[]", name: "fees", type: "uint24[]" },
+      { internalType: "uint256", name: "amountIn", type: "uint256" },
+    ],
+    name: "quoteV2Multiple",
+    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "quoterAddress", type: "address" },
+      { internalType: "address", name: "tokenIn", type: "address" },
+      { internalType: "address", name: "tokenOut", type: "address" },
+      { internalType: "uint24", name: "fee", type: "uint24" },
+      { internalType: "uint256", name: "amountIn", type: "uint256" },
+    ],
+    name: "quoteV3",
+    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      { internalType: "address[]", name: "quoterAddresses", type: "address[]" },
+      { internalType: "address[]", name: "tokenIns", type: "address[]" },
+      { internalType: "address[]", name: "tokenOuts", type: "address[]" },
+      { internalType: "uint24[]", name: "fees", type: "uint24[]" },
+      { internalType: "uint256", name: "amountIn", type: "uint256" },
+    ],
+    name: "quoteV3Multiple",
+    outputs: [{ internalType: "uint256", name: "amountOut", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
 const quoterContract = new ethers.Contract(
   pancakeQuoterV2Address,
   quoterV2Abi,
+  provider
+);
+
+const universalQuoterContract = new ethers.Contract(
+  "0xc21016328d9f527058e4de7e73a90e83971bed6d",
+  universalQuoterABI,
   provider
 );
 
@@ -170,15 +249,34 @@ async function quoteExactInputSingle(params) {
   return result;
 }
 
+async function universalQuoter(
+  forkBitmap,
+  quoterOrPoolddresses,
+  tokenIns,
+  tokenOuts,
+  fees,
+  amountIn
+) {
+  const result = await universalQuoterContract.quoteUniversal.staticCall(
+    forkBitmap,
+    quoterOrPoolddresses,
+    tokenIns,
+    tokenOuts,
+    fees,
+    amountIn
+  );
+  return result;
+}
+
 const params = {
-  tokenIn: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
-  tokenOut: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
-  fee: "100",
-  amountIn: ethers.parseUnits("10", 18),
+  tokenIn: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+  tokenOut: "0x55d398326f99059ff775485246999027b3197955",
+  fee: "500",
+  amountIn: ethers.parseUnits("0.5", 18),
   sqrtPriceLimitX96: 0,
 };
 
-const pairAddress = "0x0f338Ec12d3f7C3D77A4B9fcC1f95F3FB6AD0EA6";
+const poolAddress = "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE";
 
 const pairAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
@@ -822,7 +920,7 @@ const pairAbi = [
     type: "function",
   },
 ];
-const pairContract = new ethers.Contract(pairAddress, pairAbi, provider);
+const pairContract = new ethers.Contract(poolAddress, pairAbi, provider);
 
 getTickBitmapValue = async () => {
   const result = await pairContract.tickBitmap(0);
@@ -851,13 +949,13 @@ getPairValues = async () => {
   };
 };
 
-getTickBitmapValue().then((result) => {
-  console.log("TickBitmap :", result);
-});
+// getTickBitmapValue().then((result) => {
+//   console.log("TickBitmap :", result);
+// });
 
-getPairValues().then((result) => {
-  console.log("Slot0 :", result);
-});
+// getPairValues().then((result) => {
+//   console.log("Slot0 :", result);
+// });
 
 quoteExactInputSingle(params).then((result) => {
   let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
@@ -867,4 +965,39 @@ quoteExactInputSingle(params).then((result) => {
   console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
   console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
   console.log("gasEstimate : ", gasEstimate.toString());
+});
+
+// -------------- Universal Quoter ---------------
+const forkBitmap = "0x00010001";
+const quoterOrPoolddresses = [
+  "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE", //pancakeV2
+  "0x78D78E420Da98ad378D7799bE8f4AF69033EB077", //uniswap
+  "0xEAD6bDAb1B9fC66c9a1C0e647674845971f57032", //nomiV2
+  "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997", //sushi
+];
+const tokenIns = [
+  "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+  "0x55d398326f99059ff775485246999027b3197955",
+  "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+  "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+];
+const tokenOuts = [
+  "0x55d398326f99059ff775485246999027b3197955",
+  "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+  "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+  "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+];
+const fees = [2500, 500, 1000, 500];
+
+const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
+
+universalQuoter(
+  forkBitmap,
+  quoterOrPoolddresses,
+  tokenIns,
+  tokenOuts,
+  fees,
+  amountIn
+).then((result) => {
+  console.log(result);
 });
