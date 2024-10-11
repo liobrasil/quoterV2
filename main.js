@@ -1090,8 +1090,8 @@ universalQuoter(
   console.log("Time taken : ", Date.now() - t0);
 });
 
-const t1 = Date.now();
-multiCall(paramsMulti).then((result) => {
-  console.log(result);
-  console.log("Time taken : ", Date.now() - t1);
-});
+// const t1 = Date.now();
+// multiCall(paramsMulti).then((result) => {
+//   console.log(result);
+//   console.log("Time taken : ", Date.now() - t1);
+// });
