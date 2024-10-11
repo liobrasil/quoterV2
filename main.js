@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const rpcUrl = "https://binance.llamarpc.com";
+const rpcUrl = "http://localhost:9545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
 
 //------------- addresses
@@ -1087,7 +1087,7 @@ universalQuoter(
   amountIn
 ).then((result) => {
   console.log("resultat single: ", result);
-  console.log("Time taken : ", Date.now() - t0);
+  console.log("Time taken (ms) : ", Date.now() - t0);
 });
 
 // const t1 = Date.now();
