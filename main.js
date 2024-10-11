@@ -1,7 +1,10 @@
 const ethers = require("ethers");
 
-const rpcUrl = "http://localhost:8545";
-const provider = new ethers.JsonRpcProvider(rpcUrl);
+// const rpcUrl = "http://localhost:8545";
+// const provider = new ethers.JsonRpcProvider(rpcUrl);
+
+const ipcPath = "/data/bsc/node/geth.ipc";
+const provider = new ethers.IpcSocketProvider(ipcPath);
 
 //------------- addresses
 const pancakeQuoterV2Address = "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997";
