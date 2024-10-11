@@ -954,7 +954,7 @@ const multicallContract = new ethers.Contract(
   provider
 );
 
-const pairContract = new ethers.Contract(poolAddress, pairAbi, provider);
+// const pairContract = new ethers.Contract(poolAddress, pairAbi, provider);
 
 //------------- Functions
 async function quoteExactInputSingle(params) {
@@ -982,7 +982,7 @@ async function universalQuoter(
 }
 
 async function multiCall(paramsMulti) {
-  const result = await multicallContract.multiCall.staticCall(params);
+  const result = await multicallContract.multiCall.staticCall(paramsMulti);
   return result;
 }
 
@@ -1065,6 +1065,15 @@ const fees = [2500, 500, 1000, 500];
 
 const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
 const paramsMulti = [
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
   { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
 ];
 
