@@ -1,7 +1,7 @@
 const ethers = require("ethers");
 
 //RPC
-const rpcUrl = "http://localhost:8545";
+const rpcUrl = "http://localhost:9545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
 
 /// IPC
