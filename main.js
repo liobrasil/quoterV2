@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const rpcUrl = "https://binance.llamarpc.com";
+const rpcUrl = "http://localhost:8545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
 
 //------------- addresses
@@ -171,7 +171,7 @@ const universalQuoterABI = [
       { internalType: "bytes", name: "forkBitmap", type: "bytes" },
       {
         internalType: "address[]",
-        name: "quoterOrPoolddresses",
+        name: "quoterOrPoolAddresses",
         type: "address[]",
       },
       { internalType: "address[]", name: "tokenIns", type: "address[]" },
@@ -964,7 +964,7 @@ async function quoteExactInputSingle(params) {
 
 async function universalQuoter(
   forkBitmap,
-  quoterOrPoolddresses,
+  quoterOrPoolAddresses,
   tokenIns,
   tokenOuts,
   fees,
@@ -972,7 +972,7 @@ async function universalQuoter(
 ) {
   const result = await universalQuoterContract.quoteUniversal.staticCall(
     forkBitmap,
-    quoterOrPoolddresses,
+    quoterOrPoolAddresses,
     tokenIns,
     tokenOuts,
     fees,
@@ -1043,7 +1043,7 @@ const poolAddress = "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE";
 
 // -------------- Universal Quoter ---------------
 const forkBitmap = "0x00010001";
-const quoterOrPoolddresses = [
+const quoterOrPoolAddresses = [
   "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE", //pancakeV2
   "0x78D78E420Da98ad378D7799bE8f4AF69033EB077", //uniswap
   "0xEAD6bDAb1B9fC66c9a1C0e647674845971f57032", //nomiV2
@@ -1064,23 +1064,22 @@ const tokenOuts = [
 const fees = [2500, 500, 1000, 500];
 
 const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
-const paramsMulti = [
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
-];
+
+const N = 100;
+const value = {
+  forkBitmap,
+  quoterOrPoolAddresses,
+  tokenIns,
+  tokenOuts,
+  fees,
+  amountIn,
+};
+const paramsMulti = Array.from({ length: N }, () => value);
 
 const t0 = Date.now();
 universalQuoter(
   forkBitmap,
-  quoterOrPoolddresses,
+  quoterOrPoolAddresses,
   tokenIns,
   tokenOuts,
   fees,
