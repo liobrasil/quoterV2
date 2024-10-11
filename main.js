@@ -1049,7 +1049,7 @@ quoteExactInputSingle(params).then((result) => {
 });
 
 // -------------- Universal Quoter ---------------
-const forkBitmap = "0x000100";
+const forkBitmap = "0x00010001";
 const quoterOrPoolAddresses = [
   "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE", //pancake_V2
   "0x78D78E420Da98ad378D7799bE8f4AF69033EB077", //uniswap
