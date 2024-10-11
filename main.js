@@ -1031,15 +1031,17 @@ const poolAddress = "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE";
 //   console.log("Slot0 :", result);
 // });
 
-// quoteExactInputSingle(params).then((result) => {
-//   let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
-//     result;
+const t = Date.now();
+quoteExactInputSingle(params).then((result) => {
+  let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
+    result;
 
-//   console.log("amountOut : ", amountOut.toString());
-//   console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
-//   console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
-//   console.log("gasEstimate : ", gasEstimate.toString());
-// });
+  console.log("amountOut : ", amountOut.toString());
+  console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
+  console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
+  console.log("gasEstimate : ", gasEstimate.toString());
+  console.log("Time taken Normal Quoter (ms) : ", Date.now() - t);
+});
 
 // -------------- Universal Quoter ---------------
 const forkBitmap = "0x00010001";
@@ -1065,7 +1067,7 @@ const fees = [2500, 500, 1000, 500];
 
 const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
 
-const N = 100;
+const N = 10000;
 const value = {
   forkBitmap,
   quoterOrPoolAddresses,
