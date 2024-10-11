@@ -1,11 +1,8 @@
 const ethers = require("ethers");
 
 //RPC
-const rpcUrl = "http://localhost:9545";
+const rpcUrl = "http://localhost:8545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
-provider.getBlockNumber().then((blockNumber) => {
-  console.log("Block Number: ", blockNumber);
-});
 
 /// IPC
 // const ipcPath = "/data/bsc/geth.fast/geth.ipc";
@@ -1052,11 +1049,11 @@ quoteExactInputSingle(params).then((result) => {
 });
 
 // -------------- Universal Quoter ---------------
-const forkBitmap = "0x00010001";
+const forkBitmap = "0x000100";
 const quoterOrPoolAddresses = [
-  "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE", //pancakeV2
+  "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE", //pancake_V2
   "0x78D78E420Da98ad378D7799bE8f4AF69033EB077", //uniswap
-  "0xEAD6bDAb1B9fC66c9a1C0e647674845971f57032", //nomiV2
+  "0xEAD6bDAb1B9fC66c9a1C0e647674845971f57032", //nomi_V2
   "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997", //sushi
 ];
 const tokenIns = [
@@ -1075,7 +1072,7 @@ const fees = [2500, 500, 1000, 500];
 
 const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
 
-const N = 1000;
+const N = 100;
 const value = {
   forkBitmap,
   quoterOrPoolAddresses,
