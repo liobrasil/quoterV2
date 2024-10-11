@@ -1,9 +1,14 @@
 const ethers = require("ethers");
 
-const rpcUrl = "";
-
+const rpcUrl = "http://localhost:9545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
+
+//------------- addresses
 const pancakeQuoterV2Address = "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997";
+const universalQuoterAddress = "0xc21016328d9f527058e4de7e73a90e83971bed6d";
+const multicallAddress = "0xde4685a542280bd0c91cfa378b9a50b00e4ccd8d";
+
+//----------------- ABIs
 const quoterV2Abi = [
   {
     inputs: [
@@ -232,51 +237,60 @@ const universalQuoterABI = [
     type: "function",
   },
 ];
-const quoterContract = new ethers.Contract(
-  pancakeQuoterV2Address,
-  quoterV2Abi,
-  provider
-);
 
-const universalQuoterContract = new ethers.Contract(
-  "0xc21016328d9f527058e4de7e73a90e83971bed6d",
-  universalQuoterABI,
-  provider
-);
-
-async function quoteExactInputSingle(params) {
-  const result = await quoterContract.quoteExactInputSingle.staticCall(params);
-  return result;
-}
-
-async function universalQuoter(
-  forkBitmap,
-  quoterOrPoolddresses,
-  tokenIns,
-  tokenOuts,
-  fees,
-  amountIn
-) {
-  const result = await universalQuoterContract.quoteUniversal.staticCall(
-    forkBitmap,
-    quoterOrPoolddresses,
-    tokenIns,
-    tokenOuts,
-    fees,
-    amountIn
-  );
-  return result;
-}
-
-const params = {
-  tokenIn: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
-  tokenOut: "0x55d398326f99059ff775485246999027b3197955",
-  fee: "500",
-  amountIn: ethers.parseUnits("0.5", 18),
-  sqrtPriceLimitX96: 0,
-};
-
-const poolAddress = "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE";
+const multicallABI = [
+  {
+    inputs: [
+      {
+        components: [
+          {
+            internalType: "bytes",
+            name: "forkBitmap",
+            type: "bytes",
+          },
+          {
+            internalType: "address[]",
+            name: "quoterOrPoolAddresses",
+            type: "address[]",
+          },
+          {
+            internalType: "address[]",
+            name: "tokenIns",
+            type: "address[]",
+          },
+          {
+            internalType: "address[]",
+            name: "tokenOuts",
+            type: "address[]",
+          },
+          {
+            internalType: "uint24[]",
+            name: "fees",
+            type: "uint24[]",
+          },
+          {
+            internalType: "uint256",
+            name: "amountIn",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct MultiCall.QuoteParams[]",
+        name: "params",
+        type: "tuple[]",
+      },
+    ],
+    name: "multiCall",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
 
 const pairAbi = [
   { inputs: [], stateMutability: "nonpayable", type: "constructor" },
@@ -920,34 +934,94 @@ const pairAbi = [
     type: "function",
   },
 ];
+
+//------------- Contracts
+const quoterContract = new ethers.Contract(
+  pancakeQuoterV2Address,
+  quoterV2Abi,
+  provider
+);
+
+const universalQuoterContract = new ethers.Contract(
+  universalQuoterAddress,
+  universalQuoterABI,
+  provider
+);
+
+const multicallContract = new ethers.Contract(
+  multicallAddress,
+  multicallABI,
+  provider
+);
+
 const pairContract = new ethers.Contract(poolAddress, pairAbi, provider);
 
-getTickBitmapValue = async () => {
-  const result = await pairContract.tickBitmap(0);
+//------------- Functions
+async function quoteExactInputSingle(params) {
+  const result = await quoterContract.quoteExactInputSingle.staticCall(params);
   return result;
+}
+
+async function universalQuoter(
+  forkBitmap,
+  quoterOrPoolddresses,
+  tokenIns,
+  tokenOuts,
+  fees,
+  amountIn
+) {
+  const result = await universalQuoterContract.quoteUniversal.staticCall(
+    forkBitmap,
+    quoterOrPoolddresses,
+    tokenIns,
+    tokenOuts,
+    fees,
+    amountIn
+  );
+  return result;
+}
+
+async function multiCall(paramsMulti) {
+  const result = await multicallContract.multiCall.staticCall(params);
+  return result;
+}
+
+const params = {
+  tokenIn: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", // WBNB
+  tokenOut: "0x55d398326f99059ff775485246999027b3197955", // USDT
+  fee: "500",
+  amountIn: ethers.parseUnits("0.5", 18),
+  sqrtPriceLimitX96: 0,
 };
 
-getPairValues = async () => {
-  const slot0 = await pairContract.slot0();
-  const {
-    sqrtPriceX96,
-    tick,
-    observationIndex,
-    observationCardinality,
-    observationCardinalityNext,
-    feeProtocol,
-    unlocked,
-  } = slot0;
-  return {
-    sqrtPriceX96,
-    tick,
-    observationIndex,
-    observationCardinality,
-    observationCardinalityNext,
-    feeProtocol,
-    unlocked,
-  };
-};
+const poolAddress = "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE";
+
+// getTickBitmapValue = async () => {
+//   const result = await pairContract.tickBitmap(0);
+//   return result;
+// };
+
+// getPairValues = async () => {
+//   const slot0 = await pairContract.slot0();
+//   const {
+//     sqrtPriceX96,
+//     tick,
+//     observationIndex,
+//     observationCardinality,
+//     observationCardinalityNext,
+//     feeProtocol,
+//     unlocked,
+//   } = slot0;
+//   return {
+//     sqrtPriceX96,
+//     tick,
+//     observationIndex,
+//     observationCardinality,
+//     observationCardinalityNext,
+//     feeProtocol,
+//     unlocked,
+//   };
+// };
 
 // getTickBitmapValue().then((result) => {
 //   console.log("TickBitmap :", result);
@@ -957,15 +1031,15 @@ getPairValues = async () => {
 //   console.log("Slot0 :", result);
 // });
 
-quoteExactInputSingle(params).then((result) => {
-  let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
-    result;
+// quoteExactInputSingle(params).then((result) => {
+//   let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
+//     result;
 
-  console.log("amountOut : ", amountOut.toString());
-  console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
-  console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
-  console.log("gasEstimate : ", gasEstimate.toString());
-});
+//   console.log("amountOut : ", amountOut.toString());
+//   console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
+//   console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
+//   console.log("gasEstimate : ", gasEstimate.toString());
+// });
 
 // -------------- Universal Quoter ---------------
 const forkBitmap = "0x00010001";
@@ -990,7 +1064,11 @@ const tokenOuts = [
 const fees = [2500, 500, 1000, 500];
 
 const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
+const paramsMulti = [
+  { forkBitmap, quoterOrPoolddresses, tokenIns, tokenOuts, fees, amountIn },
+];
 
+const t0 = Date.now();
 universalQuoter(
   forkBitmap,
   quoterOrPoolddresses,
@@ -1000,4 +1078,11 @@ universalQuoter(
   amountIn
 ).then((result) => {
   console.log(result);
+  console.log("Time taken : ", Date.now() - t0);
+});
+
+const t1 = Date.now();
+multiCall(paramsMulti).then((result) => {
+  console.log(result);
+  console.log("Time taken : ", Date.now() - t1);
 });
