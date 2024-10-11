@@ -1079,7 +1079,7 @@ const fees = [2500, 500, 1000, 500];
 
 const amountIn = ethers.parseUnits("1", 18); // 0.5 WBNB tokenIn (assuming 18 decimals)
 
-const N = 10000;
+const N = 1000;
 const value = {
   forkBitmap,
   quoterOrPoolAddresses,
