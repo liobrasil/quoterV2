@@ -1,19 +1,12 @@
 const ethers = require("ethers");
 
-// const rpcUrl = "http://localhost:8545";
-// const provider = new ethers.JsonRpcProvider(rpcUrl);
+//RPC
+const rpcUrl = "http://localhost:8545";
+const provider = new ethers.JsonRpcProvider(rpcUrl);
 
-const ipcPath = "/data/bsc/geth.fast/geth.ipc";
-const provider = new ethers.IpcSocketProvider(ipcPath);
-// Example: Get the current block number
-provider
-  .getBlockNumber()
-  .then((blockNumber) => {
-    console.log("Current block number:", blockNumber);
-  })
-  .catch((error) => {
-    console.error("Error connecting to the node via IPC:", error);
-  });
+/// IPC
+// const ipcPath = "/data/bsc/geth.fast/geth.ipc";
+// const provider = new ethers.IpcSocketProvider(ipcPath);
 
 //------------- addresses
 const pancakeQuoterV2Address = "0xB048Bbc1Ee6b733FFfCFb9e9CeF7375518e25997";
