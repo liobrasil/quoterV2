@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const rpcUrl = "http://localhost:9545";
+const rpcUrl = "http://localhost:8545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
 
 //------------- addresses
