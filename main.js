@@ -1086,7 +1086,7 @@ universalQuoter(
   fees,
   amountIn
 ).then((result) => {
-  console.log(result);
+  console.log("resultat single: ", result);
   console.log("Time taken : ", Date.now() - t0);
 });
 
