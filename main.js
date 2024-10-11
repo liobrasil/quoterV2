@@ -3,7 +3,9 @@ const ethers = require("ethers");
 //RPC
 const rpcUrl = "http://localhost:9545";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
-console.log("Provider connected", await provider.getBlockNumber());
+provider.getBlockNumber().then((blockNumber) => {
+  console.log("Block Number: ", blockNumber);
+});
 
 /// IPC
 // const ipcPath = "/data/bsc/geth.fast/geth.ipc";
