@@ -3,7 +3,7 @@ const ethers = require("ethers");
 // const rpcUrl = "http://localhost:8545";
 // const provider = new ethers.JsonRpcProvider(rpcUrl);
 
-const ipcPath = "/data/bsc/node/geth.ipc";
+const ipcPath = "/data/bsc/geth.fast/geth.ipc";
 const provider = new ethers.IpcSocketProvider(ipcPath);
 // Example: Get the current block number
 provider
