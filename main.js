@@ -1,6 +1,6 @@
 const ethers = require("ethers");
 
-const rpcUrl = "http://localhost:9545";
+const rpcUrl = "https://binance.llamarpc.com";
 const provider = new ethers.JsonRpcProvider(rpcUrl);
 
 //------------- addresses
@@ -1031,15 +1031,15 @@ const poolAddress = "0x16b9a82891338f9bA80E2D6970FddA79D1eb0daE";
 //   console.log("Slot0 :", result);
 // });
 
-quoteExactInputSingle(params).then((result) => {
-  let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
-    result;
+// quoteExactInputSingle(params).then((result) => {
+//   let { amountOut, sqrtPriceX96After, initializedTicksCrossed, gasEstimate } =
+//     result;
 
-  console.log("amountOut : ", amountOut.toString());
-  console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
-  console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
-  console.log("gasEstimate : ", gasEstimate.toString());
-});
+//   console.log("amountOut : ", amountOut.toString());
+//   console.log("sqrtPriceX96After : ", sqrtPriceX96After.toString());
+//   console.log("initializedTicksCrossed : ", initializedTicksCrossed.toString());
+//   console.log("gasEstimate : ", gasEstimate.toString());
+// });
 
 // -------------- Universal Quoter ---------------
 const forkBitmap = "0x00010001";
@@ -1078,17 +1078,17 @@ const paramsMulti = [
 ];
 
 const t0 = Date.now();
-// universalQuoter(
-//   forkBitmap,
-//   quoterOrPoolddresses,
-//   tokenIns,
-//   tokenOuts,
-//   fees,
-//   amountIn
-// ).then((result) => {
-//   console.log(result);
-//   console.log("Time taken : ", Date.now() - t0);
-// });
+universalQuoter(
+  forkBitmap,
+  quoterOrPoolddresses,
+  tokenIns,
+  tokenOuts,
+  fees,
+  amountIn
+).then((result) => {
+  console.log(result);
+  console.log("Time taken : ", Date.now() - t0);
+});
 
 // const t1 = Date.now();
 // multiCall(paramsMulti).then((result) => {
